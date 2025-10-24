@@ -7,7 +7,7 @@ cstat_map = {
     4: [(3,1), (5, 1)],
     5: [(22,1),(4,1),(7,1), (6, 2)],
     6: [(5,2), (7, 2)],
-    7: [(5,1)(6, 2), (8, 1)],
+    7: [(5,1), (6, 2), (8, 1)],
     8: [(7,1), (9, 1), (3, 2)],
     9: [(8, 1), (19, 2),(10, 1)],
     10: [(11, 1), (9, 1), (18, 2)],
@@ -24,3 +24,36 @@ cstat_map = {
     21: [(2, 1), (13, 1), (20, 2), (22, 2)],
     22: [(5, 1), (20, 1), (21, 2)]
 }
+
+import heapq
+
+def dijkstra(graph, source):
+    dist = {node: float('inf') for node in graph}
+    dist[source] = 0
+    
+    pq = [(0, source)]
+    
+    while pq:
+        current_dist, u = heapq.heappop(pq)
+        
+        if current_dist > dist[u]:
+            continue
+        
+        for v, weight in graph[u]:
+            if dist[v] > dist[u] + weight:
+                dist[v] = dist[u] + weight
+                heapq.heappush(pq, (dist[v], v))
+    
+    return dist
+
+source = 1
+targets = [6, 8, 9, 15, 16, 22]
+
+distances = dijkstra(cstat_map, source)
+
+print("Shortest distances from node", source)
+for t in targets:
+    if t in distances:
+        print(f"To node {t}: {distances[t]}")
+    else:
+        print(f"To node {t}: No path found")
